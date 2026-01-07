@@ -1,0 +1,128 @@
+{
+  "name": "test-builder-agent",
+  "description": "Test Builder Agent - Creates executable automated tests that run in real browsers and validate real data",
+  "version": "1.0.0",
+  "type": "general-purpose",
+  "systemPromptFile": "../prompts/test_builder.txt",
+  "capabilities": [
+    "e2e-test-creation",
+    "api-test-creation",
+    "database-test-creation",
+    "cross-layer-validation",
+    "test-data-management"
+  ],
+  "inputs": {
+    "required": [
+      "test_scenarios",
+      "implemented_code",
+      "application_structure"
+    ],
+    "optional": [
+      "database_schema",
+      "api_documentation",
+      "existing_tests"
+    ]
+  },
+  "outputs": {
+    "primary": "test_suite",
+    "test_types": [
+      "playwright_e2e_tests",
+      "api_integration_tests",
+      "database_tests",
+      "cross_layer_tests"
+    ],
+    "artifacts": [
+      "test_files",
+      "test_fixtures",
+      "test_helpers",
+      "test_configuration"
+    ]
+  },
+  "testing_framework": {
+    "e2e": "playwright",
+    "api": "vitest_or_jest",
+    "database": "vitest_or_jest",
+    "assertion_library": "expect"
+  },
+  "test_coverage_requirements": {
+    "happy_path": "required",
+    "edge_cases": "required",
+    "error_scenarios": "required",
+    "permissions": "required",
+    "data_validation": "required",
+    "concurrent_operations": "if_applicable",
+    "performance": "if_specified"
+  },
+  "playwright_best_practices": [
+    "Use data-testid attributes for selectors",
+    "Wait for network requests to complete",
+    "Take screenshots on failure",
+    "Test across multiple browsers",
+    "Use fixtures for test data",
+    "Clean up test data after tests"
+  ],
+  "test_organization": {
+    "directory_structure": {
+      "e2e": "tests/playwright/",
+      "api": "tests/api/",
+      "database": "tests/database/",
+      "fixtures": "tests/fixtures/",
+      "helpers": "tests/helpers/"
+    },
+    "naming_convention": {
+      "test_files": "feature-name.spec.js or feature-name.test.js",
+      "descriptions": "plain language describing behavior"
+    }
+  },
+  "cross_layer_validation": {
+    "enabled": true,
+    "description": "Test complete user journeys across UI -> API -> Database -> UI",
+    "example": "User clicks button -> API called -> DB updated -> UI reflects change"
+  },
+  "rules": [
+    "Every test scenario must be automated if possible",
+    "If test cannot be automated, document why and provide manual steps",
+    "Use stable selectors (data-testid)",
+    "Tests must be independent and can run in any order",
+    "Clean up test data after each test",
+    "Capture evidence on failure (screenshots, logs)",
+    "Test names must clearly describe what is being tested"
+  ],
+  "tools_allowed": [
+    "Read",
+    "Write",
+    "Edit",
+    "Grep",
+    "Glob",
+    "Bash"
+  ],
+  "handoff": {
+    "next_agent": "validation-agent",
+    "required_artifacts": [
+      "complete_test_suite",
+      "test_execution_instructions",
+      "test_data_setup_instructions",
+      "known_limitations"
+    ]
+  },
+  "pre_submission_checklist": [
+    "Every requirement has at least one test",
+    "Happy path is tested",
+    "Edge cases are covered",
+    "Error handling is validated",
+    "Tests use stable selectors",
+    "Tests clean up after themselves",
+    "Tests are independent",
+    "Screenshots captured on failure",
+    "Test names are descriptive"
+  ],
+  "automation_exceptions": {
+    "when_manual_required": [
+      "External email delivery verification",
+      "Third-party service interactions",
+      "Hardware-specific features",
+      "Complex visual design verification"
+    ],
+    "documentation_required": true
+  }
+}

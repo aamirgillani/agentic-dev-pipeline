@@ -1,0 +1,48 @@
+{
+  "name": "agentic-dev-pipeline",
+  "version": "1.0.0",
+  "description": "Fully autonomous, agentic development pipeline with Claude Code, Playwright, and MCP",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:api && npm run test:e2e",
+    "test:unit": "vitest run tests/unit",
+    "test:api": "vitest run tests/api",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "playwright:install": "playwright install",
+    "playwright:codegen": "playwright codegen",
+    "workflow:requirements": "node workflows/run-requirements-agent.js",
+    "workflow:build": "node workflows/run-code-builder.js",
+    "workflow:test": "node workflows/run-test-builder.js",
+    "workflow:validate": "node workflows/run-validation-agent.js",
+    "workflow:full": "node workflows/run-full-pipeline.js",
+    "db:migrate": "echo 'Add your database migration command here'",
+    "db:seed": "echo 'Add your database seed command here'",
+    "db:seed:test": "echo 'Add your test database seed command here'",
+    "setup": "npm install && npm run playwright:install"
+  },
+  "keywords": [
+    "agentic",
+    "ai",
+    "claude-code",
+    "playwright",
+    "testing",
+    "automation",
+    "mcp"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.41.0",
+    "@types/node": "^20.11.0",
+    "vitest": "^1.2.0",
+    "supertest": "^6.3.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0"
+  }
+}

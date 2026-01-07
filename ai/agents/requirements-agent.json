@@ -1,0 +1,74 @@
+{
+  "name": "requirements-agent",
+  "description": "Requirements & Test Design Agent - Converts plain-English feature descriptions into structured, testable requirements",
+  "version": "1.0.0",
+  "type": "general-purpose",
+  "systemPromptFile": "../prompts/requirements_and_tests.txt",
+  "capabilities": [
+    "requirements-analysis",
+    "test-scenario-generation",
+    "edge-case-identification",
+    "acceptance-criteria-definition"
+  ],
+  "inputs": {
+    "required": [
+      "feature_description"
+    ],
+    "optional": [
+      "existing_context",
+      "related_requirements",
+      "user_personas"
+    ]
+  },
+  "outputs": {
+    "primary": "requirements_document",
+    "format": "markdown",
+    "location": "docs/requirements/",
+    "sections": [
+      "feature_summary",
+      "user_stories",
+      "functional_requirements",
+      "non_functional_requirements",
+      "acceptance_criteria",
+      "test_scenarios",
+      "dependencies",
+      "data_model",
+      "api_endpoints",
+      "ui_components"
+    ]
+  },
+  "checkpoints": {
+    "human_review": {
+      "enabled": true,
+      "stage": "after_generation",
+      "message": "Requirements and test scenarios generated. Please review and approve before proceeding to code generation.",
+      "approval_required": true
+    }
+  },
+  "rules": [
+    "Never proceed to code generation without human approval",
+    "All assumptions must be explicitly documented",
+    "Every requirement must be testable",
+    "Edge cases must be identified and documented",
+    "If requirements are ambiguous, ask clarifying questions"
+  ],
+  "tools_allowed": [
+    "Read",
+    "Grep",
+    "Glob",
+    "AskUserQuestion"
+  ],
+  "tools_forbidden": [
+    "Write",
+    "Edit",
+    "Bash"
+  ],
+  "handoff": {
+    "next_agent": "code-builder-agent",
+    "required_artifacts": [
+      "requirements_document",
+      "test_scenarios"
+    ],
+    "approval_gate": true
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "name": "code-builder-agent",
+  "description": "Code Builder Agent - Implements only what has been approved in requirements, with no scope creep",
+  "version": "1.0.0",
+  "type": "general-purpose",
+  "systemPromptFile": "../prompts/code_builder.txt",
+  "capabilities": [
+    "backend-implementation",
+    "frontend-implementation",
+    "database-migrations",
+    "api-development",
+    "error-handling",
+    "security-implementation"
+  ],
+  "inputs": {
+    "required": [
+      "approved_requirements",
+      "test_scenarios"
+    ],
+    "optional": [
+      "existing_codebase_context",
+      "technical_constraints",
+      "code_style_guide"
+    ]
+  },
+  "outputs": {
+    "primary": "implementation",
+    "artifacts": [
+      "source_code",
+      "database_migrations",
+      "configuration_files",
+      "implementation_summary"
+    ],
+    "documentation": [
+      "code_comments",
+      "api_documentation",
+      "setup_instructions"
+    ]
+  },
+  "constraints": {
+    "scope": "strict",
+    "creativity": "minimal",
+    "refactoring": "only_when_required",
+    "new_features": "forbidden_unless_specified"
+  },
+  "security_requirements": [
+    "Input validation on all user inputs",
+    "Parameterized queries (no SQL injection)",
+    "XSS prevention",
+    "Authentication on protected routes",
+    "Authorization checks",
+    "No hardcoded secrets",
+    "Proper error handling without exposing sensitive info"
+  ],
+  "code_quality": {
+    "error_handling": "required",
+    "logging": "required_for_important_operations",
+    "type_safety": "preferred",
+    "consistency": "match_existing_patterns",
+    "documentation": "required_for_public_apis"
+  },
+  "rules": [
+    "Build exactly what's in requirements - no additions",
+    "Map every function/file to a specific requirement",
+    "Follow security checklist before submitting",
+    "Ask for clarification if requirements are ambiguous",
+    "No 'nice to have' features",
+    "No refactoring unless explicitly required"
+  ],
+  "tools_allowed": [
+    "Read",
+    "Write",
+    "Edit",
+    "Grep",
+    "Glob",
+    "Bash",
+    "AskUserQuestion"
+  ],
+  "handoff": {
+    "next_agent": "test-builder-agent",
+    "required_artifacts": [
+      "implementation_summary",
+      "files_created_modified",
+      "setup_instructions",
+      "notes_for_test_builder"
+    ],
+    "includes": [
+      "list_of_functions_endpoints",
+      "expected_behaviors",
+      "edge_cases_to_test"
+    ]
+  },
+  "pre_submission_checklist": [
+    "All requirements implemented",
+    "Security checklist satisfied",
+    "Error handling comprehensive",
+    "Code follows project conventions",
+    "No debug statements left in code",
+    "Configuration externalized",
+    "Dependencies added to package files"
+  ]
+}

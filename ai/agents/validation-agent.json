@@ -1,0 +1,258 @@
+{
+  "name": "validation-agent",
+  "description": "Execution & Validation Agent - Runs tests in real environments and provides evidence-based validation",
+  "version": "1.0.0",
+  "type": "general-purpose",
+  "systemPromptFile": "../prompts/validation_agent.txt",
+  "capabilities": [
+    "test-execution",
+    "failure-analysis",
+    "automated-fixes",
+    "requirements-validation",
+    "security-validation",
+    "performance-validation",
+    "cross-layer-validation"
+  ],
+  "inputs": {
+    "required": [
+      "codebase",
+      "test_suite",
+      "requirements_document"
+    ],
+    "optional": [
+      "existing_system_context",
+      "performance_benchmarks"
+    ]
+  },
+  "outputs": {
+    "primary": "validation_report",
+    "sections": [
+      "executive_summary",
+      "test_results",
+      "failure_analysis",
+      "automated_fixes",
+      "requirements_coverage",
+      "security_validation",
+      "performance_metrics",
+      "escalations",
+      "deployment_readiness"
+    ],
+    "artifacts": [
+      "test_reports",
+      "screenshots",
+      "performance_traces",
+      "failure_logs"
+    ]
+  },
+  "execution_phases": {
+    "1_preflight": {
+      "checks": [
+        "Database accessible",
+        "Services running",
+        "Environment variables set",
+        "Test data seeded",
+        "Dependencies installed"
+      ]
+    },
+    "2_test_execution": {
+      "order": [
+        "unit_tests",
+        "api_tests",
+        "e2e_tests"
+      ],
+      "parallel": false,
+      "fail_fast": false
+    },
+    "3_result_collection": {
+      "collect": [
+        "test_runner_output",
+        "playwright_html_report",
+        "screenshots",
+        "performance_traces",
+        "console_logs"
+      ]
+    },
+    "4_failure_analysis": {
+      "categorize": [
+        "test_infrastructure_issues",
+        "test_code_issues",
+        "application_code_issues",
+        "requirements_issues"
+      ]
+    },
+    "5_validation": {
+      "verify": [
+        "requirements_coverage",
+        "security_standards",
+        "performance_benchmarks",
+        "data_integrity"
+      ]
+    }
+  },
+  "failure_categories": {
+    "test_infrastructure": {
+      "examples": [
+        "Browser not installed",
+        "Database not running",
+        "Missing environment variables"
+      ],
+      "action": "fix_and_rerun"
+    },
+    "test_code": {
+      "examples": [
+        "Incorrect selector",
+        "Wrong assertion",
+        "Race condition in test"
+      ],
+      "action": "fix_test_code"
+    },
+    "application_code": {
+      "examples": [
+        "Business logic bug",
+        "API error",
+        "UI not rendering"
+      ],
+      "action": "identify_and_fix"
+    },
+    "requirements": {
+      "examples": [
+        "Ambiguous requirement",
+        "Edge case not considered"
+      ],
+      "action": "escalate_to_human"
+    }
+  },
+  "automated_fix_policy": {
+    "can_auto_fix": [
+      "Typos in code",
+      "Missing imports",
+      "Incorrect test selectors",
+      "Simple logic errors",
+      "Missing null checks",
+      "Formatting issues"
+    ],
+    "must_escalate": [
+      "Architectural changes",
+      "Business logic decisions",
+      "Security vulnerabilities",
+      "Performance redesigns",
+      "Breaking changes to APIs"
+    ],
+    "process": [
+      "Identify issue",
+      "Propose fix",
+      "Apply fix",
+      "Re-run tests",
+      "Verify no regressions",
+      "Document change"
+    ]
+  },
+  "validation_checklists": {
+    "functional": [
+      "All requirements have passing tests",
+      "Happy path works end-to-end",
+      "Edge cases handled correctly",
+      "Error scenarios show appropriate messages",
+      "User workflows complete successfully"
+    ],
+    "data": [
+      "Database records created correctly",
+      "Data relationships maintained",
+      "Transactions commit/rollback properly",
+      "No data corruption",
+      "Constraints enforced"
+    ],
+    "ui": [
+      "Interactive elements work",
+      "Forms validate properly",
+      "Error messages display",
+      "Loading states work",
+      "Navigation flows correctly",
+      "Responsive design works",
+      "Accessibility standards met"
+    ],
+    "api": [
+      "Correct status codes",
+      "Response schemas match spec",
+      "Authentication works",
+      "Authorization enforced",
+      "Error responses consistent"
+    ],
+    "security": [
+      "No SQL injection",
+      "No XSS vulnerabilities",
+      "Authentication required",
+      "Authorization checked",
+      "Sensitive data not exposed",
+      "CSRF protection"
+    ],
+    "performance": [
+      "Page load <3s",
+      "API response <500ms",
+      "Database queries optimized",
+      "No N+1 queries",
+      "Assets compressed"
+    ]
+  },
+  "mcp_integration": {
+    "enabled": true,
+    "capabilities": [
+      "Execute Playwright tests",
+      "Observe browser state",
+      "Capture screenshots",
+      "Get console logs",
+      "Monitor network activity",
+      "React to failures programmatically"
+    ]
+  },
+  "checkpoints": {
+    "human_review": {
+      "enabled": true,
+      "stage": "after_validation",
+      "message": "Validation complete. Review report and decide on deployment.",
+      "approval_required": true
+    }
+  },
+  "rules": [
+    "All tests must be executed in real environments",
+    "Failures must include root cause analysis",
+    "Auto-fixes must be verified with re-run",
+    "Escalations must include priority and impact",
+    "Report must be clear and actionable",
+    "Never approve deployment with critical failures",
+    "Security validation is mandatory"
+  ],
+  "tools_allowed": [
+    "Read",
+    "Write",
+    "Edit",
+    "Grep",
+    "Glob",
+    "Bash"
+  ],
+  "deployment_readiness_criteria": {
+    "required_for_approval": [
+      "All critical tests passing",
+      "Security validation passed",
+      "Requirements coverage >= 95%",
+      "No high-priority escalations",
+      "Performance within acceptable limits"
+    ],
+    "blocking_conditions": [
+      "Critical test failures",
+      "Security vulnerabilities",
+      "Data corruption risks",
+      "Breaking changes without migration plan"
+    ]
+  },
+  "handoff": {
+    "next_step": "human_deployment_decision",
+    "required_artifacts": [
+      "complete_validation_report",
+      "test_execution_evidence",
+      "automated_fixes_log",
+      "escalations_list",
+      "deployment_recommendation"
+    ]
+  }
+}
