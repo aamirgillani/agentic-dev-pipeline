@@ -1,0 +1,192 @@
+{
+  "name": "Copper & Teal Design System",
+  "version": "3.0.0",
+  "description": "Professional B2B design system optimized for legal software applications",
+  "mental_model": {
+    "copper": "Action - Use for buttons, CTAs, active indicators",
+    "teal": "Structure - Use for navigation, headers, organization"
+  },
+  "colors": {
+    "primary_action": {
+      "name": "Copper",
+      "hex": "#B87333",
+      "rgb": "184, 115, 51",
+      "usage": "Buttons, CTAs, active indicators, primary actions"
+    },
+    "navigation": {
+      "name": "Deep Teal",
+      "hex": "#1A2F2F",
+      "rgb": "26, 47, 47",
+      "usage": "Sidebar, headers, navigation elements, structural chrome"
+    },
+    "accent": {
+      "name": "Teal Accent",
+      "hex": "#327070",
+      "rgb": "50, 112, 112",
+      "usage": "Links, highlights, secondary actions, hover states"
+    },
+    "background": {
+      "name": "Warm White",
+      "hex": "#FAF9F7",
+      "rgb": "250, 249, 247",
+      "usage": "Page background, large surfaces"
+    },
+    "surface": {
+      "name": "White",
+      "hex": "#FFFFFF",
+      "rgb": "255, 255, 255",
+      "usage": "Cards, panels, modals, input backgrounds"
+    },
+    "text_primary": {
+      "name": "Warm Gray 900",
+      "hex": "#2D2A26",
+      "rgb": "45, 42, 38",
+      "usage": "Body text, headings, primary content"
+    },
+    "text_secondary": {
+      "name": "Warm Gray 600",
+      "hex": "#6B6560",
+      "rgb": "107, 101, 96",
+      "usage": "Labels, placeholders, secondary text, timestamps"
+    },
+    "border": {
+      "name": "Warm Gray 200",
+      "hex": "#E5E2DE",
+      "rgb": "229, 226, 222",
+      "usage": "Input borders, dividers, separators"
+    },
+    "error": {
+      "name": "Error Red",
+      "hex": "#DC2626",
+      "rgb": "220, 38, 38",
+      "usage": "Error states, destructive actions, validation errors"
+    },
+    "success": {
+      "name": "Success Green",
+      "hex": "#16A34A",
+      "rgb": "22, 163, 74",
+      "usage": "Success states, confirmations, completed items"
+    },
+    "warning": {
+      "name": "Warning Amber",
+      "hex": "#D97706",
+      "rgb": "217, 119, 6",
+      "usage": "Warning states, caution indicators"
+    }
+  },
+  "typography": {
+    "font_family": {
+      "primary": "Source Sans 3, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "monospace": "Source Code Pro, 'Fira Code', Consolas, monospace"
+    },
+    "scale": {
+      "body": { "size": "16px", "line_height": "1.5", "weight": 400 },
+      "body_small": { "size": "14px", "line_height": "1.5", "weight": 400 },
+      "h1": { "size": "28px", "line_height": "1.2", "weight": 600 },
+      "h2": { "size": "22px", "line_height": "1.3", "weight": 600 },
+      "h3": { "size": "18px", "line_height": "1.4", "weight": 600 },
+      "labels": { "size": "13px", "line_height": "1.4", "weight": 500, "transform": "uppercase", "letter_spacing": "0.5px" },
+      "buttons": { "size": "14px", "line_height": "1", "weight": 600 },
+      "caption": { "size": "12px", "line_height": "1.4", "weight": 400 }
+    }
+  },
+  "spacing": {
+    "grid_unit": "4px",
+    "scale": {
+      "space-1": "4px",
+      "space-2": "8px",
+      "space-3": "12px",
+      "space-4": "16px",
+      "space-5": "20px",
+      "space-6": "24px",
+      "space-8": "32px",
+      "space-10": "40px",
+      "space-12": "48px"
+    },
+    "semantic": {
+      "label_to_input": "8px",
+      "input_to_input": "16px",
+      "section_break": "32px",
+      "card_padding": "24px",
+      "modal_padding": "32px"
+    }
+  },
+  "components": {
+    "border_radius": {
+      "small": "4px",
+      "medium": "8px",
+      "large": "16px",
+      "inputs": "8px",
+      "buttons": "8px",
+      "cards": "16px",
+      "modals": "16px"
+    },
+    "shadows": {
+      "small": "0 1px 2px rgba(0, 0, 0, 0.05)",
+      "medium": "0 2px 4px rgba(0, 0, 0, 0.08)",
+      "large": "0 4px 8px rgba(0, 0, 0, 0.10)",
+      "max_opacity": "10%"
+    },
+    "borders": {
+      "default": "1px solid #E5E2DE",
+      "focus": "2px solid #B87333",
+      "error": "2px solid #DC2626"
+    },
+    "hit_targets": {
+      "minimum": "44px",
+      "touch_target": "48px"
+    }
+  },
+  "states": {
+    "focus": {
+      "outline": "3px solid #B87333",
+      "outline_offset": "2px"
+    },
+    "hover": {
+      "button_primary": "#9A5F2A",
+      "link": "#1A2F2F"
+    },
+    "disabled": {
+      "opacity": 0.5,
+      "cursor": "not-allowed"
+    },
+    "loading": {
+      "spinner_color": "#B87333",
+      "skeleton_base": "#E5E2DE",
+      "skeleton_highlight": "#F5F4F2"
+    }
+  },
+  "breakpoints": {
+    "mobile": "375px",
+    "tablet": "768px",
+    "desktop": "1024px",
+    "wide": "1440px"
+  },
+  "accessibility": {
+    "contrast_requirements": {
+      "normal_text": "4.5:1",
+      "large_text": "3:1",
+      "ui_components": "3:1"
+    },
+    "focus_visible": true,
+    "reduced_motion": true
+  },
+  "anti_patterns": {
+    "avoid": [
+      "Bold gradients in backgrounds",
+      "Multiple bright accent colors",
+      "Heavy shadows (>10% opacity)",
+      "Playful animations",
+      "Decorative elements without purpose",
+      "Consumer-style design patterns"
+    ],
+    "prefer": [
+      "Neutral-dominant palette (80% grays/neutrals, 20% color)",
+      "Single primary action color",
+      "Flat colors, subtle shadows",
+      "High contrast text",
+      "Uppercase labels for structure",
+      "4px spacing grid"
+    ]
+  }
+}

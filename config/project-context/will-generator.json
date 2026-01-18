@@ -1,0 +1,104 @@
+{
+  "name": "Will Generator",
+  "description": "Legal Document Generator - PyQt6 desktop application for Ontario legal documents",
+  "version": "1.0.0",
+  "design_system": "copper-teal-v3",
+
+  "technology_stack": {
+    "frontend": {
+      "framework": "HTML/CSS/JS in PyQt6 WebEngine",
+      "bridge": "QWebChannel",
+      "critical_variables": {
+        "bridge": "Use 'bridge' NOT 'backend' for QWebChannel communication",
+        "currentClientId": "Use 'currentClientId' NOT 'currentClient'",
+        "currentMatterId": "Use 'currentMatterId' NOT 'currentMatter'"
+      }
+    },
+    "backend": {
+      "language": "Python 3.11+",
+      "framework": "PyQt6",
+      "database": "SQLite"
+    },
+    "testing": {
+      "frontend": ["ESLint", "Custom unit tests", "Playwright visual tests"],
+      "backend": ["pytest", "unittest"]
+    }
+  },
+
+  "target_users": {
+    "primary": "Solo lawyers and small law firms",
+    "age_range": "25-65+",
+    "session_duration": "30-60 minutes per session",
+    "use_case": "Client intake and legal document generation"
+  },
+
+  "document_types": [
+    "Last Will and Testament",
+    "Power of Attorney for Property",
+    "Power of Attorney for Personal Care",
+    "Affidavits",
+    "Letters"
+  ],
+
+  "jurisdiction": "Ontario, Canada",
+
+  "key_features": {
+    "client_management": "Full client lifecycle from intake to document generation",
+    "document_generation": "Template-based DOCX generation with field substitution",
+    "audit_history": "Complete audit trail of all client data changes",
+    "persons_registry": "Reusable people database across clients"
+  },
+
+  "ui_structure": {
+    "layout": "Sidebar navigation + Main content area",
+    "navigation_items": [
+      "Dashboard",
+      "Clients",
+      "New Client Intake",
+      "Documents",
+      "Templates",
+      "Settings"
+    ],
+    "intake_sections": [
+      "Personal Information",
+      "Family",
+      "Assets",
+      "Estate Planning",
+      "Provisions",
+      "Review & Generate"
+    ]
+  },
+
+  "critical_patterns": {
+    "save_behavior": "Auto-save on field blur, manual save button, confirmation toast",
+    "error_handling": "Toast notifications with retry options",
+    "loading_states": "Skeleton loaders for async operations",
+    "empty_states": "Helpful messages with call-to-action"
+  },
+
+  "file_structure": {
+    "frontend": "src/frontend/",
+    "backend": "src/backend/",
+    "templates": "templates/",
+    "tests": {
+      "frontend": "tests/frontend/",
+      "backend": "tests/"
+    },
+    "output": "test_output/"
+  },
+
+  "npm_scripts": {
+    "lint": "eslint src/frontend/*.js",
+    "test:frontend": "node tests/frontend/run_frontend_tests.js",
+    "test:visual": "npx playwright test",
+    "test:all": "npm run lint && npm run test:frontend && npm run test:visual",
+    "design-review": "node scripts/design-review.js"
+  },
+
+  "quality_gates": {
+    "lint_errors": 0,
+    "test_pass_rate": "100%",
+    "visual_regression": "0 failures",
+    "accessibility": "WCAG AA compliance"
+  }
+}

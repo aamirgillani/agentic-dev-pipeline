@@ -1,0 +1,149 @@
+{
+  "name": "design-agent",
+  "description": "UI/UX Design & Multi-AI Review Agent - Creates mockups, captures screenshots, and orchestrates design feedback from multiple AI models",
+  "version": "1.0.0",
+  "type": "design-specialist",
+  "systemPromptFile": "../prompts/design_review.txt",
+  "capabilities": [
+    "ui-mockup-creation",
+    "screenshot-capture",
+    "multi-ai-review-orchestration",
+    "design-system-validation",
+    "accessibility-assessment",
+    "responsive-design-testing"
+  ],
+  "inputs": {
+    "required": [
+      "requirements_document",
+      "ui_components"
+    ],
+    "optional": [
+      "design_system_config",
+      "existing_mockups",
+      "brand_guidelines"
+    ]
+  },
+  "outputs": {
+    "primary": "design_review_package",
+    "format": "html",
+    "location": "docs/design/",
+    "artifacts": [
+      "mockup_files",
+      "screenshots_desktop",
+      "screenshots_tablet",
+      "screenshots_mobile",
+      "ai_review_prompts",
+      "design_review_report"
+    ]
+  },
+  "checkpoints": {
+    "human_review": {
+      "enabled": true,
+      "stage": "after_ai_reviews",
+      "message": "Design mockups created and AI reviews collected. Please review aggregate scores and approve design before proceeding to implementation.",
+      "approval_required": true
+    }
+  },
+  "scoring_criteria": {
+    "design_system_compliance": {
+      "weight": 20,
+      "checks": [
+        "Colors match specification",
+        "Typography follows hierarchy",
+        "Spacing uses defined grid",
+        "Components use correct border-radius"
+      ]
+    },
+    "visual_hierarchy": {
+      "weight": 15,
+      "checks": [
+        "Primary action clear",
+        "Headings distinguishable",
+        "Important info prominent",
+        "Logical reading flow"
+      ]
+    },
+    "accessibility": {
+      "weight": 20,
+      "checks": [
+        "Text contrast >= 4.5:1 (WCAG AA)",
+        "Focus states visible",
+        "Labels present for inputs",
+        "No color-only indicators",
+        "Hit targets >= 44x44px"
+      ]
+    },
+    "consistency": {
+      "weight": 15,
+      "checks": [
+        "Similar elements styled identically",
+        "Spacing uniform",
+        "Terminology consistent",
+        "Patterns predictable"
+      ]
+    },
+    "user_feedback_states": {
+      "weight": 15,
+      "checks": [
+        "Loading states present",
+        "Error states clear",
+        "Success confirmation visible",
+        "Empty states helpful"
+      ]
+    },
+    "responsive_design": {
+      "weight": 15,
+      "checks": [
+        "Works on mobile (375px)",
+        "Works on tablet (768px)",
+        "Works on desktop (1200px+)",
+        "No horizontal scroll"
+      ]
+    }
+  },
+  "quality_gates": {
+    "pass": {
+      "average_score": 85,
+      "critical_issues": 0
+    },
+    "pass_with_changes": {
+      "average_score": 70,
+      "critical_issues": 0
+    },
+    "blocked": {
+      "average_score_below": 70,
+      "or_critical_issues": true
+    }
+  },
+  "multi_ai_review": {
+    "models": ["ChatGPT", "Gemini", "Claude"],
+    "consensus_threshold": 2,
+    "prompt_template": "design_review_prompt.md"
+  },
+  "rules": [
+    "Always validate against project design system configuration",
+    "Capture screenshots at all three viewport sizes",
+    "Generate prompts for all configured AI models",
+    "Aggregate scores and identify issues flagged by multiple AIs",
+    "Document all design decisions and trade-offs",
+    "Never proceed without design approval if score < 70"
+  ],
+  "tools_allowed": [
+    "Read",
+    "Write",
+    "Bash",
+    "Glob",
+    "WebFetch"
+  ],
+  "tools_forbidden": [],
+  "handoff": {
+    "previous_agent": "requirements-agent",
+    "next_agent": "code-builder-agent",
+    "required_artifacts": [
+      "approved_mockups",
+      "design_review_report",
+      "aggregate_scores"
+    ],
+    "approval_gate": true
+  }
+}
