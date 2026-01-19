@@ -100,5 +100,41 @@
     "test_pass_rate": "100%",
     "visual_regression": "0 failures",
     "accessibility": "WCAG AA compliance"
+  },
+
+  "smoke_tests": {
+    "critical_files": [
+      "src/backend/main.py",
+      "package.json",
+      "src/backend/database.py",
+      "src/backend/bridge.py",
+      "src/backend/document_generator.py",
+      "src/frontend/app.js",
+      "src/frontend/index.html",
+      "src/frontend/style.css"
+    ],
+    "database_files": [
+      "legal_documents.db"
+    ],
+    "backend_modules": [
+      "database",
+      "bridge",
+      "document_generator"
+    ],
+    "frontend_js": [
+      "src/frontend/app.js"
+    ],
+    "startup_check": "import sys; sys.path.insert(0, 'src/backend'); from database import Database; from bridge import Bridge; db = Database(); bridge = Bridge(db); print('STARTUP_OK')",
+    "run_command": "node ../agentic-dev-pipeline/workflows/smoke-tests.js --config=will-generator"
+  },
+
+  "test_commands": {
+    "smoke": "node ../agentic-dev-pipeline/workflows/smoke-tests.js --config=will-generator",
+    "backend": "python3 -m pytest tests/ -v --ignore=tests/test_document_generator.py --ignore=tests/test_integration.py --ignore=tests/test_stress.py",
+    "frontend": "node tests/frontend/run_frontend_tests.js",
+    "comprehensive": "node tests/frontend/test_app_comprehensive.js",
+    "lint": "npm run lint",
+    "visual": "npx playwright test",
+    "all": "npm run smoke && npm run lint && npm run test:frontend && npm run test:backend"
   }
 }

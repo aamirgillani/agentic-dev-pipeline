@@ -45,6 +45,38 @@
     ]
   },
   "execution_phases": {
+    "0_smoke_tests": {
+      "description": "Critical pre-flight checks that MUST pass before any other tests",
+      "run_command": "node workflows/smoke-tests.js --project={project_path} --config={project_name}",
+      "blocking": true,
+      "checks": [
+        "Critical files exist and are not empty",
+        "Database files are valid SQLite (not corrupted)",
+        "App backend can initialize without crashes",
+        "Python dependencies are installed",
+        "Node dependencies are installed",
+        "Backend modules import successfully",
+        "Frontend JavaScript has valid syntax"
+      ],
+      "failure_action": "STOP - Do not proceed with other tests until smoke tests pass",
+      "common_issues": {
+        "corrupted_database": {
+          "symptom": "sqlite3.DatabaseError: file is not a database",
+          "cause": "Database file was overwritten with non-SQLite content",
+          "fix": "Delete the .db file and restart the app"
+        },
+        "missing_module": {
+          "symptom": "ModuleNotFoundError",
+          "cause": "Python dependencies not installed",
+          "fix": "Run: pip install -r requirements.txt"
+        },
+        "empty_file": {
+          "symptom": "Critical file has 0 bytes",
+          "cause": "File was corrupted or improperly created",
+          "fix": "Restore from git or recreate the file"
+        }
+      }
+    },
     "1_preflight": {
       "checks": [
         "Database accessible",
