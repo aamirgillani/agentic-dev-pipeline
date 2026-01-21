@@ -60,6 +60,9 @@ class SmokeTestRunner {
         // 6. Frontend Syntax Check
         await this.runFrontendSyntaxCheck();
 
+        // 7. Frontend Static Analysis (undefined variables, etc.)
+        await this.runFrontendStaticAnalysis();
+
         // Summary
         this.printSummary();
 
@@ -285,6 +288,63 @@ print('STARTUP_OK')
                 this.results.failed.push(`${jsFile} has syntax errors`);
                 this.log('fail', `${jsFile} - SYNTAX ERROR`);
                 this.log('info', `  ${e.stderr?.toString().slice(0, 200) || e.message}`);
+            }
+        }
+
+        console.log();
+    }
+
+    async runFrontendStaticAnalysis() {
+        console.log('🔍 Frontend Static Analysis (undefined variables)\n');
+
+        const jsFiles = this.projectConfig?.smoke_tests?.frontend_js || this.projectConfig?.frontend_js || ['src/frontend/app.js'];
+        const globalVars = this.projectConfig?.smoke_tests?.frontend_globals || this.projectConfig?.frontend_globals || [];
+
+        // Build globals string for ESLint (e.g., "QWebChannel:readonly,qt:readonly")
+        const globalsArg = globalVars.length > 0
+            ? `--global "${globalVars.join(':readonly,') + ':readonly'}"`
+            : '';
+
+        for (const jsFile of jsFiles) {
+            const fullPath = join(this.projectPath, jsFile);
+            if (!existsSync(fullPath)) {
+                continue; // Already warned in syntax check
+            }
+
+            try {
+                // Run ESLint with no-undef rule to catch undefined variables
+                // This catches errors like "inheritorsList is not defined"
+                const eslintCmd = `npx eslint --no-eslintrc --env browser,es2021 ${globalsArg} --rule "no-undef: error" --format compact "${fullPath}"`;
+                execSync(eslintCmd, {
+                    cwd: this.projectPath,
+                    timeout: 30000,
+                    stdio: 'pipe'
+                });
+                this.results.passed.push(`${jsFile} no undefined variables`);
+                this.log('pass', `${jsFile} - no undefined variables`);
+            } catch (e) {
+                const output = e.stdout?.toString() || e.stderr?.toString() || '';
+                // Count undefined variable errors
+                const undefErrors = (output.match(/is not defined/g) || []).length;
+
+                if (undefErrors > 0) {
+                    // This is a FAILURE - undefined variables cause runtime errors
+                    this.results.failed.push(`${jsFile} has ${undefErrors} undefined variable(s)`);
+                    this.log('fail', `${jsFile} - ${undefErrors} undefined variable(s) detected`);
+
+                    // Show first few errors
+                    const lines = output.split('\n').filter(l => l.includes('is not defined')).slice(0, 5);
+                    lines.forEach(line => {
+                        const match = line.match(/'([^']+)' is not defined/);
+                        if (match) {
+                            this.log('info', `    → ${match[1]} is not defined`);
+                        }
+                    });
+                } else {
+                    // Other ESLint issues (not undefined vars)
+                    this.results.passed.push(`${jsFile} no undefined variables`);
+                    this.log('pass', `${jsFile} - no undefined variables`);
+                }
             }
         }
 

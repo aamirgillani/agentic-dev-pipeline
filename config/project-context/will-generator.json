@@ -124,6 +124,11 @@
     "frontend_js": [
       "src/frontend/app.js"
     ],
+    "frontend_globals": [
+      "QWebChannel",
+      "qt",
+      "bridge"
+    ],
     "startup_check": "import sys; sys.path.insert(0, 'src/backend'); from database import Database; from bridge import Bridge; db = Database(); bridge = Bridge(db); print('STARTUP_OK')",
     "run_command": "node ../agentic-dev-pipeline/workflows/smoke-tests.js --config=will-generator"
   },
