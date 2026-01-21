@@ -13,7 +13,7 @@
  * Run: node workflows/smoke-tests.js --project=/path/to/project --config=project-name
  */
 
-import { existsSync, readFileSync, statSync } from 'fs';
+import { existsSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync, spawn } from 'child_process';
@@ -21,15 +21,47 @@ import { execSync, spawn } from 'child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Error Learning System integration
+import { ErrorLearningSystem } from './error-learning.js';
+
 class SmokeTestRunner {
-    constructor(projectPath, projectConfig) {
+    constructor(projectPath, projectConfig, projectConfigName = null) {
         this.projectPath = projectPath;
         this.projectConfig = projectConfig;
+        this.projectConfigName = projectConfigName;
         this.results = {
             passed: [],
             failed: [],
             warnings: []
         };
+        // Captured errors for learning system
+        this.capturedErrors = [];
+
+        // Initialize error learning system if project name is known
+        if (projectConfigName) {
+            try {
+                this.errorLearner = new ErrorLearningSystem(projectConfigName);
+            } catch (e) {
+                // Error learning is optional
+                this.errorLearner = null;
+            }
+        }
+    }
+
+    /**
+     * Capture an error for the learning system
+     */
+    captureError(message, category, context = {}) {
+        this.capturedErrors.push({ message, category, context });
+
+        // If error learner is available, report immediately
+        if (this.errorLearner) {
+            try {
+                this.errorLearner.reportError(message, category, context);
+            } catch (e) {
+                // Don't fail smoke tests if learning system has issues
+            }
+        }
     }
 
     log(type, message) {
@@ -335,12 +367,14 @@ print('STARTUP_OK')
                     this.results.failed.push(`${jsFile} has ${undefErrors} undefined variable(s)`);
                     this.log('fail', `${jsFile} - ${undefErrors} undefined variable(s) detected`);
 
-                    // Show first few errors
+                    // Show first few errors and capture for learning
                     const lines = output.split('\n').filter(l => l.includes('is not defined')).slice(0, 5);
                     lines.forEach(line => {
                         const match = line.match(/'([^']+)' is not defined/);
                         if (match) {
                             this.log('info', `    → ${match[1]} is not defined`);
+                            // Capture error for learning system
+                            this.captureError(`${match[1]} is not defined`, 'js-runtime', { file: jsFile });
                         }
                     });
                 } else {
@@ -409,13 +443,20 @@ print('STARTUP_OK')
                 this.results.failed.push(`Frontend E2E: ${failedCount} test(s) failed`);
                 this.log('fail', `Frontend E2E tests: ${failedCount} failed, ${passedCount} passed`);
 
-                // Try to extract error details
+                // Try to extract error details and capture for learning
                 const errorLines = output.split('\n').filter(l =>
                     l.includes('Error:') || l.includes('is not defined') || l.includes('Cannot access')
                 ).slice(0, 5);
 
                 errorLines.forEach(line => {
                     this.log('info', `    → ${line.trim().slice(0, 100)}`);
+                    // Capture error for learning system
+                    const cleanError = line.trim().slice(0, 200);
+                    if (cleanError.includes('is not defined')) {
+                        this.captureError(cleanError, 'js-runtime', { source: 'playwright-e2e' });
+                    } else if (cleanError.includes('Cannot access')) {
+                        this.captureError(cleanError, 'js-runtime', { source: 'playwright-e2e' });
+                    }
                 });
             } else {
                 // Some other error (playwright not installed, etc.)
@@ -435,6 +476,9 @@ print('STARTUP_OK')
         console.log(`  ✅ Passed:   ${this.results.passed.length}`);
         console.log(`  ❌ Failed:   ${this.results.failed.length}`);
         console.log(`  ⚠️  Warnings: ${this.results.warnings.length}`);
+        if (this.capturedErrors.length > 0) {
+            console.log(`  📚 Errors Learned: ${this.capturedErrors.length}`);
+        }
 
         if (this.results.failed.length > 0) {
             console.log('\n  FAILURES (must fix before proceeding):');
@@ -484,8 +528,14 @@ async function main() {
         }
     }
 
-    const runner = new SmokeTestRunner(projectPath, projectConfig);
+    const runner = new SmokeTestRunner(projectPath, projectConfig, projectConfigName);
     await runner.runAll();
+
+    // Report any captured errors
+    if (runner.capturedErrors.length > 0) {
+        console.log(`\n📚 Error Learning: ${runner.capturedErrors.length} error(s) captured for regression testing`);
+        console.log('   Run: node workflows/error-learning.js --list --project=' + projectConfigName);
+    }
 }
 
 main().catch(console.error);

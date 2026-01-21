@@ -1,0 +1,59 @@
+{
+  "projectName": "will-generator",
+  "version": "1.0",
+  "createdAt": "2026-01-21T01:47:12.111Z",
+  "errors": [
+    {
+      "id": "err_1768960032113_dkb17xdzu",
+      "message": "inheritorsList is not defined",
+      "category": "js-runtime",
+      "context": {},
+      "reportedAt": "2026-01-21T01:47:12.113Z",
+      "status": "test-generated",
+      "testGenerated": true,
+      "detectedPattern": {
+        "type": "variableName",
+        "match": "inheritorsList is not defined",
+        "captures": [
+          "inheritorsList"
+        ],
+        "testType": "playwright"
+      }
+    },
+    {
+      "id": "err_1768960032201_pnyl5teq5",
+      "message": "Cannot access 'enhancedAppointments' before initialization",
+      "category": "js-runtime",
+      "context": {},
+      "reportedAt": "2026-01-21T01:47:12.201Z",
+      "status": "test-generated",
+      "testGenerated": true,
+      "detectedPattern": {
+        "type": "temporalDeadZone",
+        "match": "Cannot access 'enhancedAppointments' before initialization",
+        "captures": [
+          "enhancedAppointments"
+        ],
+        "testType": "playwright"
+      }
+    }
+  ],
+  "generatedTests": [
+    {
+      "errorId": "err_1768960032113_dkb17xdzu",
+      "testName": "variable_inheritorsList_accessible",
+      "testCode": "\n    test('regression: variable_inheritorsList_accessible', async ({ page }) => {\n        const htmlPath = path.resolve(__dirname, '../../src/frontend/index.html');\n        await page.goto(`file://${htmlPath}`);\n        await page.waitForLoadState('domcontentloaded');\n        await page.waitForTimeout(1000);\n\n        // Check that inheritorsList is accessible (either as variable or via getter function)\n        // Original error: \"inheritorsList is not defined\"\n        const isAccessible = await page.evaluate(() => {\n            try {\n                // First check if getter function exists (e.g., getInheritorsList for inheritorsList)\n                if (typeof window.getInheritorsList === 'function') {\n                    window.getInheritorsList();\n                    return true;\n                }\n                // Then check if variable is directly accessible\n                if (typeof inheritorsList !== 'undefined') {\n                    return true;\n                }\n                // Check window scope\n                if (typeof window.inheritorsList !== 'undefined') {\n                    return true;\n                }\n                return false;\n            } catch (e) {\n                console.error('Access check failed:', e.message);\n                return false;\n            }\n        });\n        expect(isAccessible, 'inheritorsList should be accessible (directly or via getInheritorsList)').toBe(true);\n    });",
+      "testType": "playwright",
+      "generatedAt": "2026-01-21T01:47:12.117Z"
+    },
+    {
+      "errorId": "err_1768960032201_pnyl5teq5",
+      "testName": "variable_enhancedAppointments_no_tdz",
+      "testCode": "\n    test('regression: variable_enhancedAppointments_no_tdz', async ({ page }) => {\n        const htmlPath = path.resolve(__dirname, '../../src/frontend/index.html');\n        await page.goto(`file://${htmlPath}`);\n        await page.waitForLoadState('domcontentloaded');\n        await page.waitForTimeout(1000);\n\n        // Check that enhancedAppointments doesn't cause TDZ error when accessed via functions\n        // Original error: \"Cannot access 'enhancedAppointments' before initialization\"\n        // This error typically occurs when let/const variables are accessed before declaration\n        const noTdzError = await page.evaluate(() => {\n            const errors = [];\n            // Listen for any page errors\n            window.onerror = (msg) => errors.push(msg);\n\n            // Try calling functions that might use enhancedAppointments\n            // The fix is usually to wrap access in try-catch or check initialization\n            try {\n                // If there are check/calculate functions, call them\n                const fnNames = Object.keys(window).filter(k =>\n                    typeof window[k] === 'function' &&\n                    (k.includes('check') || k.includes('calculate') || k.includes('Tab'))\n                );\n                for (const fn of fnNames.slice(0, 10)) {\n                    try {\n                        window[fn]();\n                    } catch (e) {\n                        if (e.message && e.message.includes('enhancedAppointments') && e.message.includes('before initialization')) {\n                            return false; // TDZ error found\n                        }\n                    }\n                }\n                return true; // No TDZ errors\n            } catch (e) {\n                return !e.message?.includes('before initialization');\n            }\n        });\n        expect(noTdzError, 'enhancedAppointments should not cause TDZ errors').toBe(true);\n    });",
+      "testType": "playwright",
+      "generatedAt": "2026-01-21T01:47:12.202Z"
+    }
+  ],
+  "patterns": [],
+  "updatedAt": "2026-01-21T01:47:12.202Z"
+}
