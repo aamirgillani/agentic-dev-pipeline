@@ -63,6 +63,9 @@ class SmokeTestRunner {
         // 7. Frontend Static Analysis (undefined variables, etc.)
         await this.runFrontendStaticAnalysis();
 
+        // 8. Frontend E2E Runtime Error Check (Playwright)
+        await this.runFrontendE2ECheck();
+
         // Summary
         this.printSummary();
 
@@ -345,6 +348,79 @@ print('STARTUP_OK')
                     this.results.passed.push(`${jsFile} no undefined variables`);
                     this.log('pass', `${jsFile} - no undefined variables`);
                 }
+            }
+        }
+
+        console.log();
+    }
+
+    async runFrontendE2ECheck() {
+        console.log('🎭 Frontend E2E Runtime Check (Playwright)\n');
+
+        // Check if playwright tests exist for this project
+        const playwrightTestPath = this.projectConfig?.smoke_tests?.playwright_js_errors_test;
+        if (!playwrightTestPath) {
+            this.log('info', 'No playwright_js_errors_test configured - skipping');
+            console.log();
+            return;
+        }
+
+        const fullTestPath = join(this.projectPath, playwrightTestPath);
+        if (!existsSync(fullTestPath)) {
+            this.log('info', `Test file not found: ${playwrightTestPath} - skipping`);
+            console.log();
+            return;
+        }
+
+        // Check if playwright is installed
+        const packageJsonPath = join(this.projectPath, 'package.json');
+        if (!existsSync(packageJsonPath)) {
+            this.log('info', 'No package.json found - skipping Playwright tests');
+            console.log();
+            return;
+        }
+
+        try {
+            // Run the Playwright test for JS runtime errors
+            this.log('info', `Running: npx playwright test ${playwrightTestPath}`);
+            const result = execSync(`npx playwright test "${playwrightTestPath}" --reporter=list`, {
+                cwd: this.projectPath,
+                timeout: 120000,
+                stdio: 'pipe'
+            });
+
+            const output = result.toString();
+            const passedMatch = output.match(/(\d+) passed/);
+            const passedCount = passedMatch ? passedMatch[1] : '?';
+
+            this.results.passed.push(`Frontend E2E: ${passedCount} tests passed`);
+            this.log('pass', `Frontend E2E tests: ${passedCount} passed, no JS runtime errors`);
+        } catch (e) {
+            const output = e.stdout?.toString() + e.stderr?.toString() || e.message;
+
+            // Check for failures
+            const failedMatch = output.match(/(\d+) failed/);
+            const passedMatch = output.match(/(\d+) passed/);
+
+            if (failedMatch) {
+                const failedCount = failedMatch[1];
+                const passedCount = passedMatch ? passedMatch[1] : '0';
+
+                this.results.failed.push(`Frontend E2E: ${failedCount} test(s) failed`);
+                this.log('fail', `Frontend E2E tests: ${failedCount} failed, ${passedCount} passed`);
+
+                // Try to extract error details
+                const errorLines = output.split('\n').filter(l =>
+                    l.includes('Error:') || l.includes('is not defined') || l.includes('Cannot access')
+                ).slice(0, 5);
+
+                errorLines.forEach(line => {
+                    this.log('info', `    → ${line.trim().slice(0, 100)}`);
+                });
+            } else {
+                // Some other error (playwright not installed, etc.)
+                this.results.warnings.push('Frontend E2E: Could not run tests');
+                this.log('warn', `Frontend E2E tests could not run: ${e.message?.slice(0, 100)}`);
             }
         }
 

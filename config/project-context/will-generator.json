@@ -129,6 +129,7 @@
       "qt",
       "bridge"
     ],
+    "playwright_js_errors_test": "tests/frontend/test_js_runtime_errors.spec.js",
     "startup_check": "import sys; sys.path.insert(0, 'src/backend'); from database import Database; from bridge import Bridge; db = Database(); bridge = Bridge(db); print('STARTUP_OK')",
     "run_command": "node ../agentic-dev-pipeline/workflows/smoke-tests.js --config=will-generator"
   },
